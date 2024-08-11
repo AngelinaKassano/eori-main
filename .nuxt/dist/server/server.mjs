@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { effectScope, shallowReactive, reactive, getCurrentScope, hasInjectionContext, getCurrentInstance, inject, toRef, version, unref, h, shallowRef, isReadonly, isRef, defineComponent, ref, provide, createElementBlock, isShallow, isReactive, toRaw, computed, Suspense, nextTick, mergeProps, Transition, watch, Fragment, withCtx, createVNode, useSSRContext, resolveComponent, createTextVNode, onErrorCaptured, onServerPrefetch, resolveDynamicComponent, createApp } from "vue";
 import { $fetch } from "ofetch";
 import { baseURL } from "#internal/nuxt/paths";
@@ -1425,3 +1426,6 @@ export {
   resolveUnrefHeadInput as r
 };
 //# sourceMappingURL=server.mjs.map
+=======
+export { default } from "file:///D:/git/eori-main/node_modules/@nuxt/vite-builder/dist/runtime/vite-node.mjs"
+>>>>>>> d70d0e99c8ecb221cc742291809f2b685f001c72
