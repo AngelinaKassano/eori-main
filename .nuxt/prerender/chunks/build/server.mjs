@@ -1,20 +1,35 @@
-import { effectScope, shallowReactive, reactive, getCurrentScope, hasInjectionContext, getCurrentInstance, inject, toRef, version, unref, h, shallowRef, isReadonly, isRef, defineComponent, ref, provide, createElementBlock, isShallow, isReactive, toRaw, computed, Suspense, nextTick, mergeProps, Transition, watch, Fragment, withCtx, createVNode, useSSRContext, resolveComponent, createTextVNode, onErrorCaptured, onServerPrefetch, resolveDynamicComponent, createApp } from "vue";
-import { $fetch } from "ofetch";
-import { baseURL } from "#internal/nuxt/paths";
-import { createHooks } from "hookable";
-import { getContext } from "unctx";
-import { sanitizeStatusCode, createError as createError$1, appendHeader } from "h3";
-import { getActiveHead, CapoPlugin } from "unhead";
-import { defineHeadPlugin } from "@unhead/shared";
-import { START_LOCATION, createMemoryHistory, createRouter as createRouter$1, useRoute as useRoute$1, RouterView } from "vue-router";
-import { toRouteMatcher, createRouter } from "radix3";
-import { defu } from "defu";
-import { hasProtocol, isScriptProtocol, joinURL, withQuery } from "ufo";
-import "destr";
-import "klona";
-import "devalue";
-import VueSmoothScroll from "vue3-smooth-scroll";
-import { ssrRenderComponent, ssrRenderAttrs, ssrInterpolate, ssrRenderSuspense, ssrRenderVNode } from "vue/server-renderer";
+import { version, unref, inject, defineComponent, ref, provide, createElementBlock, h, computed, shallowReactive, watch, Suspense, nextTick, Fragment, Transition, hasInjectionContext, mergeProps, useSSRContext, createApp, effectScope, reactive, getCurrentScope, getCurrentInstance, onErrorCaptured, onServerPrefetch, createVNode, resolveDynamicComponent, toRef, shallowRef, isReadonly, withCtx, resolveComponent, createTextVNode, isRef, isShallow, isReactive, toRaw } from 'file://C:/Users/New/Documents/GitHub/eori-main/node_modules/vue/index.mjs';
+import { $fetch } from 'file://C:/Users/New/Documents/GitHub/eori-main/node_modules/ofetch/dist/node.mjs';
+import { b as baseURL } from '../_/renderer.mjs';
+import { createHooks } from 'file://C:/Users/New/Documents/GitHub/eori-main/node_modules/hookable/dist/index.mjs';
+import { getContext } from 'file://C:/Users/New/Documents/GitHub/eori-main/node_modules/unctx/dist/index.mjs';
+import { createError as createError$1, appendHeader, sanitizeStatusCode } from 'file://C:/Users/New/Documents/GitHub/eori-main/node_modules/h3/dist/index.mjs';
+import { getActiveHead, CapoPlugin } from 'file://C:/Users/New/Documents/GitHub/eori-main/node_modules/unhead/dist/index.mjs';
+import { defineHeadPlugin } from 'file://C:/Users/New/Documents/GitHub/eori-main/node_modules/@unhead/shared/dist/index.mjs';
+import { useRoute as useRoute$1, RouterView, createMemoryHistory, createRouter, START_LOCATION } from 'file://C:/Users/New/Documents/GitHub/eori-main/node_modules/vue-router/dist/vue-router.node.mjs';
+import { toRouteMatcher, createRouter as createRouter$1 } from 'file://C:/Users/New/Documents/GitHub/eori-main/node_modules/radix3/dist/index.mjs';
+import { defu } from 'file://C:/Users/New/Documents/GitHub/eori-main/node_modules/defu/dist/defu.mjs';
+import { joinURL, hasProtocol, isScriptProtocol, withQuery } from 'file://C:/Users/New/Documents/GitHub/eori-main/node_modules/ufo/dist/index.mjs';
+import VueSmoothScroll from 'file://C:/Users/New/Documents/GitHub/eori-main/node_modules/vue3-smooth-scroll/dist/vue-smooth-scroll.min.js';
+import { ssrRenderSuspense, ssrRenderComponent, ssrRenderVNode, ssrRenderAttrs, ssrInterpolate } from 'file://C:/Users/New/Documents/GitHub/eori-main/node_modules/vue/server-renderer/index.mjs';
+import 'file://C:/Users/New/Documents/GitHub/eori-main/node_modules/vue-bundle-renderer/dist/runtime.mjs';
+import 'file://C:/Users/New/Documents/GitHub/eori-main/node_modules/devalue/index.js';
+import 'file://C:/Users/New/Documents/GitHub/eori-main/node_modules/@unhead/ssr/dist/index.mjs';
+import '../runtime.mjs';
+import 'file://C:/Users/New/Documents/GitHub/eori-main/node_modules/destr/dist/index.mjs';
+import 'file://C:/Users/New/Documents/GitHub/eori-main/node_modules/unenv/runtime/fetch/index.mjs';
+import 'file://C:/Users/New/Documents/GitHub/eori-main/node_modules/klona/dist/index.mjs';
+import 'file://C:/Users/New/Documents/GitHub/eori-main/node_modules/scule/dist/index.mjs';
+import 'file://C:/Users/New/Documents/GitHub/eori-main/node_modules/ohash/dist/index.mjs';
+import 'file://C:/Users/New/Documents/GitHub/eori-main/node_modules/unstorage/dist/index.mjs';
+import 'file://C:/Users/New/Documents/GitHub/eori-main/node_modules/unstorage/drivers/fs.mjs';
+import 'file:///C:/Users/New/Documents/GitHub/eori-main/node_modules/nuxt/dist/core/runtime/nitro/cache-driver.js';
+import 'file://C:/Users/New/Documents/GitHub/eori-main/node_modules/unstorage/drivers/fs-lite.mjs';
+import 'node:fs';
+import 'node:url';
+import 'file://C:/Users/New/Documents/GitHub/eori-main/node_modules/pathe/dist/index.mjs';
+import 'file://C:/Users/New/Documents/GitHub/eori-main/node_modules/unenv/runtime/npm/consola.mjs';
+
 if (!globalThis.$fetch) {
   globalThis.$fetch = $fetch.create({
     baseURL: baseURL()
@@ -406,7 +421,7 @@ function injectHead() {
     return _global[globalKey$1]();
   }
   const head = inject(headSymbol);
-  if (!head && process.env.NODE_ENV !== "production")
+  if (!head && "prerender" !== "production")
     console.warn("Unhead is missing Vue context, falling back to shared context. This may have unexpected results.");
   return head || getActiveHead();
 }
@@ -563,7 +578,7 @@ function toArray$1(value) {
 async function getRouteRules(url) {
   {
     const _routeRulesMatcher = toRouteMatcher(
-      createRouter({ routes: (/* @__PURE__ */ useRuntimeConfig()).nitro.routeRules })
+      createRouter$1({ routes: (/* @__PURE__ */ useRuntimeConfig()).nitro.routeRules })
     );
     return defu({}, ..._routeRulesMatcher.matchAll(url).reverse());
   }
@@ -572,17 +587,17 @@ const _routes = [
   {
     name: "about",
     path: "/about",
-    component: () => import("./_nuxt/about-EWRxV0un.js").then((m) => m.default || m)
+    component: () => import('./about-EWRxV0un.mjs').then((m) => m.default || m)
   },
   {
     name: "catalog",
     path: "/catalog",
-    component: () => import("./_nuxt/catalog-B6DXeuYe.js").then((m) => m.default || m)
+    component: () => import('./catalog-B6DXeuYe.mjs').then((m) => m.default || m)
   },
   {
     name: "index",
     path: "/",
-    component: () => import("./_nuxt/index-motrvhAj.js").then((m) => m.default || m)
+    component: () => import('./index-motrvhAj.mjs').then((m) => m.default || m)
   }
 ];
 const _wrapIf = (component, props, slots) => {
@@ -706,7 +721,7 @@ const plugin = /* @__PURE__ */ defineNuxtPlugin({
     const history = ((_a = routerOptions.history) == null ? void 0 : _a.call(routerOptions, routerBase)) ?? createMemoryHistory(routerBase);
     const routes2 = ((_b = routerOptions.routes) == null ? void 0 : _b.call(routerOptions, _routes)) ?? _routes;
     let startPosition;
-    const router = createRouter$1({
+    const router = createRouter({
       ...routerOptions,
       scrollBehavior: (to, from, savedPosition) => {
         if (from === START_LOCATION) {
@@ -885,9 +900,6 @@ function useRequestEvent(nuxtApp = useNuxtApp()) {
   return (_a = nuxtApp.ssrContext) == null ? void 0 : _a.event;
 }
 function prerenderRoutes(path) {
-  if (!import.meta.prerender) {
-    return;
-  }
   const paths = toArray(path);
   appendHeader(useRequestEvent(), "x-nitro-prerender", paths.map((p) => encodeURIComponent(p)).join(", "));
 }
@@ -994,7 +1006,7 @@ const VueSmoothScroll_VbAQ3PEUo0 = /* @__PURE__ */ defineNuxtPlugin((nuxtApp) =>
 let routes;
 const prerender_server_LXx1wM9sKF = /* @__PURE__ */ defineNuxtPlugin(async () => {
   let __temp, __restore;
-  if (!import.meta.prerender || routerOptions.hashMode) {
+  if (routerOptions.hashMode) {
     return;
   }
   if (routes && !routes.length) {
@@ -1035,8 +1047,8 @@ const plugins = [
   prerender_server_LXx1wM9sKF
 ];
 const layouts = {
-  default: () => import("./_nuxt/default-B7HwlWaB.js").then((m) => m.default || m),
-  error: () => import("./_nuxt/error-DBrKFqY6.js").then((m) => m.default || m)
+  default: () => import('./default-B7HwlWaB.mjs').then((m) => m.default || m),
+  error: () => import('./error-DBrKFqY6.mjs').then((m) => m.default || m)
 };
 const LayoutLoader = defineComponent({
   name: "LayoutLoader",
@@ -1418,10 +1430,6 @@ let entry;
   };
 }
 const entry$1 = (ssrContext) => entry(ssrContext);
-export {
-  _export_sfc as _,
-  entry$1 as default,
-  injectHead as i,
-  resolveUnrefHeadInput as r
-};
+
+export { _export_sfc as _, entry$1 as default, injectHead as i, resolveUnrefHeadInput as r };
 //# sourceMappingURL=server.mjs.map
