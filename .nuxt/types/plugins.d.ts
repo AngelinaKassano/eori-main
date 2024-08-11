@@ -17,7 +17,8 @@ type NuxtAppInjections =
   InjectionType<typeof import("../../node_modules/nuxt/dist/pages/runtime/plugins/router").default> &
   InjectionType<typeof import("../../node_modules/nuxt/dist/pages/runtime/plugins/prefetch.client").default> &
   InjectionType<typeof import("../../node_modules/nuxt-site-config/dist/runtime/nuxt/plugins/0.siteConfig").default> &
-  InjectionType<typeof import("../../plugins/VueSmoothScroll").default>
+  InjectionType<typeof import("../../plugins/VueSmoothScroll").default> &
+  InjectionType<typeof import("../../node_modules/nuxt/dist/pages/runtime/plugins/prerender.server").default>
 
 declare module '#app' {
   interface NuxtApp extends NuxtAppInjections { }
