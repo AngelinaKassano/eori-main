@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { effectScope, shallowReactive, reactive, getCurrentScope, hasInjectionContext, getCurrentInstance, inject, toRef, version, unref, h, shallowRef, isReadonly, isRef, defineComponent, ref, provide, createElementBlock, isShallow, isReactive, toRaw, computed, Suspense, nextTick, mergeProps, Transition, watch, Fragment, withCtx, createVNode, useSSRContext, resolveComponent, createTextVNode, onErrorCaptured, onServerPrefetch, resolveDynamicComponent, createApp } from "vue";
 import { $fetch } from "ofetch";
 import { baseURL } from "#internal/nuxt/paths";
@@ -1036,8 +1035,7 @@ const plugins = [
   prerender_server_LXx1wM9sKF
 ];
 const layouts = {
-  default: () => import("./_nuxt/default-B7HwlWaB.js").then((m) => m.default || m),
-  error: () => import("./_nuxt/error-DBrKFqY6.js").then((m) => m.default || m)
+  default: () => import("./_nuxt/default-B7HwlWaB.js").then((m) => m.default || m)
 };
 const LayoutLoader = defineComponent({
   name: "LayoutLoader",
@@ -1320,14 +1318,14 @@ const _sfc_main$1 = {
 };
 function _sfc_ssrRender(_ctx, _push, _parent, _attrs, $props, $setup, $data, $options) {
   const _component_router_link = resolveComponent("router-link");
-  _push(`<div${ssrRenderAttrs(mergeProps({ class: "error-page" }, _attrs))} data-v-06c95173>`);
+  _push(`<div${ssrRenderAttrs(mergeProps({ class: "error-page" }, _attrs))} data-v-1de0b1b2>`);
   if ($props.error.statusCode === 404) {
-    _push(`<h1 data-v-06c95173>404 - Страница не найдена</h1>`);
+    _push(`<h1 data-v-1de0b1b2>404 - Страница не найдена</h1>`);
   } else {
-    _push(`<h1 data-v-06c95173>Ошибка: ${ssrInterpolate($props.error.statusCode)}</h1>`);
+    _push(`<h1 data-v-1de0b1b2>Ошибка: ${ssrInterpolate($props.error.statusCode)}</h1>`);
   }
   if ($props.error.statusCode === 404) {
-    _push(`<p data-v-06c95173>Извините, но страница, которую вы ищете, не существует.</p>`);
+    _push(`<p data-v-1de0b1b2>Извините, но страница, которую вы ищете, не существует.</p>`);
   } else {
     _push(`<!---->`);
   }
@@ -1351,7 +1349,7 @@ _sfc_main$1.setup = (props, ctx) => {
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("error.vue");
   return _sfc_setup$1 ? _sfc_setup$1(props, ctx) : void 0;
 };
-const ErrorComponent = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["ssrRender", _sfc_ssrRender], ["__scopeId", "data-v-06c95173"]]);
+const ErrorComponent = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["ssrRender", _sfc_ssrRender], ["__scopeId", "data-v-1de0b1b2"]]);
 const _sfc_main = {
   __name: "nuxt-root",
   __ssrInlineRender: true,
@@ -1426,6 +1424,3 @@ export {
   resolveUnrefHeadInput as r
 };
 //# sourceMappingURL=server.mjs.map
-=======
-export { default } from "file:///D:/git/eori-main/node_modules/@nuxt/vite-builder/dist/runtime/vite-node.mjs"
->>>>>>> d70d0e99c8ecb221cc742291809f2b685f001c72
