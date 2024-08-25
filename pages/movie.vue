@@ -33,6 +33,8 @@
           class="flex-col items-end mt-8 space-y-4 md:flex md:space-y-0 md:flex-row md:items-center md:space-x-10 md:mt-0"
         >
           <li class="menu-button"><a href="/">Главная</a></li>
+          <li class="menu-button"><a href="/games">Игры</a></li>
+        <li class="menu-button"><a href="/movie">Фильмы</a></li>
           <li class="menu-button"><a href="/catalog">Каталог</a></li>
           <li class="menu-button"><a href="/about">О нас
         
@@ -42,8 +44,7 @@
       <!-- End Navbar -->
 
 
- 
-        </div>
+     </div>
 </template>
 
 <script setup lang="ts">
