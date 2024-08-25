@@ -1,11 +1,11 @@
-import { effectScope, shallowReactive, reactive, getCurrentScope, hasInjectionContext, getCurrentInstance, inject, toRef, version, unref, h, shallowRef, isReadonly, isRef, defineComponent, ref, provide, createElementBlock, isShallow, isReactive, toRaw, computed, Suspense, nextTick, mergeProps, Transition, watch, Fragment, withCtx, createVNode, useSSRContext, resolveComponent, createTextVNode, onErrorCaptured, onServerPrefetch, resolveDynamicComponent, createApp } from "vue";
+import { effectScope, shallowReactive, reactive, getCurrentScope, hasInjectionContext, getCurrentInstance, inject, toRef, version, unref, ref, watchEffect, watch, h, shallowRef, isReadonly, isRef, defineComponent, provide, createElementBlock, isShallow, isReactive, toRaw, computed, Suspense, nextTick, mergeProps, Transition, Fragment, withCtx, createVNode, useSSRContext, onErrorCaptured, onServerPrefetch, resolveDynamicComponent, createApp } from "vue";
 import { $fetch } from "ofetch";
 import { baseURL } from "#internal/nuxt/paths";
 import { createHooks } from "hookable";
 import { getContext } from "unctx";
-import { sanitizeStatusCode, createError as createError$1 } from "h3";
+import { sanitizeStatusCode, createError as createError$1, appendHeader } from "h3";
 import { getActiveHead, CapoPlugin } from "unhead";
-import { defineHeadPlugin } from "@unhead/shared";
+import { defineHeadPlugin, composableNames, unpackMeta } from "@unhead/shared";
 import { START_LOCATION, createMemoryHistory, createRouter as createRouter$1, useRoute as useRoute$1, RouterView } from "vue-router";
 import { toRouteMatcher, createRouter } from "radix3";
 import { defu } from "defu";
@@ -14,7 +14,7 @@ import "destr";
 import "klona";
 import "devalue";
 import VueSmoothScroll from "vue3-smooth-scroll";
-import { ssrRenderComponent, ssrRenderAttrs, ssrInterpolate, ssrRenderSuspense, ssrRenderVNode } from "vue/server-renderer";
+import { ssrRenderComponent, ssrRenderAttrs, ssrRenderAttr, ssrRenderClass, ssrInterpolate, ssrRenderSuspense, ssrRenderVNode } from "vue/server-renderer";
 if (!globalThis.$fetch) {
   globalThis.$fetch = $fetch.create({
     baseURL: baseURL()
@@ -410,6 +410,53 @@ function injectHead() {
     console.warn("Unhead is missing Vue context, falling back to shared context. This may have unexpected results.");
   return head || getActiveHead();
 }
+function useHead(input, options = {}) {
+  const head = options.head || injectHead();
+  if (head) {
+    if (!head.ssr)
+      return clientUseHead(head, input, options);
+    return head.push(input, options);
+  }
+}
+function clientUseHead(head, input, options = {}) {
+  const deactivated = ref(false);
+  const resolvedInput = ref({});
+  watchEffect(() => {
+    resolvedInput.value = deactivated.value ? {} : resolveUnrefHeadInput(input);
+  });
+  const entry2 = head.push(resolvedInput.value, options);
+  watch(resolvedInput, (e) => {
+    entry2.patch(e);
+  });
+  getCurrentInstance();
+  return entry2;
+}
+const coreComposableNames = [
+  "injectHead"
+];
+({
+  "@unhead/vue": [...coreComposableNames, ...composableNames]
+});
+function useSeoMeta(input, options) {
+  const { title, titleTemplate, ...meta } = input;
+  return useHead({
+    title,
+    titleTemplate,
+    // @ts-expect-error runtime type
+    _flatMeta: meta
+  }, {
+    ...options,
+    transform(t) {
+      const meta2 = unpackMeta({ ...t._flatMeta });
+      delete t._flatMeta;
+      return {
+        // @ts-expect-error runtime type
+        ...t,
+        meta: meta2
+      };
+    }
+  });
+}
 [CapoPlugin({ track: true })];
 const unhead_KgADcZ0jPj = /* @__PURE__ */ defineNuxtPlugin({
   name: "nuxt:head",
@@ -557,7 +604,7 @@ const generateRouteKey$1 = (routeProps, override) => {
 const wrapInKeepAlive = (props, children) => {
   return { default: () => children };
 };
-function toArray(value) {
+function toArray$1(value) {
   return Array.isArray(value) ? value : [value];
 }
 async function getRouteRules(url) {
@@ -572,17 +619,27 @@ const _routes = [
   {
     name: "about",
     path: "/about",
-    component: () => import("./_nuxt/about-EWRxV0un.js").then((m) => m.default || m)
+    component: () => import("./_nuxt/about-DnjeaSic.js").then((m) => m.default || m)
   },
   {
     name: "catalog",
     path: "/catalog",
-    component: () => import("./_nuxt/catalog-B6DXeuYe.js").then((m) => m.default || m)
+    component: () => import("./_nuxt/catalog-CMZTI0WF.js").then((m) => m.default || m)
+  },
+  {
+    name: "games",
+    path: "/games",
+    component: () => import("./_nuxt/games-YHSphrVZ.js").then((m) => m.default || m)
   },
   {
     name: "index",
     path: "/",
-    component: () => import("./_nuxt/index-motrvhAj.js").then((m) => m.default || m)
+    component: () => import("./_nuxt/index-C2JG_Md7.js").then((m) => m.default || m)
+  },
+  {
+    name: "movie",
+    path: "/movie",
+    component: () => import("./_nuxt/movie-DUyZbqsJ.js").then((m) => m.default || m)
   }
 ];
 const _wrapIf = (component, props, slots) => {
@@ -704,7 +761,7 @@ const plugin = /* @__PURE__ */ defineNuxtPlugin({
       routerBase += "#";
     }
     const history = ((_a = routerOptions.history) == null ? void 0 : _a.call(routerOptions, routerBase)) ?? createMemoryHistory(routerBase);
-    const routes = ((_b = routerOptions.routes) == null ? void 0 : _b.call(routerOptions, _routes)) ?? _routes;
+    const routes2 = ((_b = routerOptions.routes) == null ? void 0 : _b.call(routerOptions, _routes)) ?? _routes;
     let startPosition;
     const router = createRouter$1({
       ...routerOptions,
@@ -725,7 +782,7 @@ const plugin = /* @__PURE__ */ defineNuxtPlugin({
         }
       },
       history,
-      routes
+      routes: routes2
     });
     nuxtApp.vueApp.use(router);
     const previousRoute = shallowRef(router.currentRoute.value);
@@ -815,7 +872,7 @@ const plugin = /* @__PURE__ */ defineNuxtPlugin({
           if (!componentMiddleware) {
             continue;
           }
-          for (const entry2 of toArray(componentMiddleware)) {
+          for (const entry2 of toArray$1(componentMiddleware)) {
             middlewareEntries.add(entry2);
           }
         }
@@ -877,9 +934,19 @@ const plugin = /* @__PURE__ */ defineNuxtPlugin({
     return { provide: { router } };
   }
 });
+function toArray(value) {
+  return Array.isArray(value) ? value : [value];
+}
 function useRequestEvent(nuxtApp = useNuxtApp()) {
   var _a;
   return (_a = nuxtApp.ssrContext) == null ? void 0 : _a.event;
+}
+function prerenderRoutes(path) {
+  if (!import.meta.prerender) {
+    return;
+  }
+  const paths = toArray(path);
+  appendHeader(useRequestEvent(), "x-nitro-prerender", paths.map((p) => encodeURIComponent(p)).join(", "));
 }
 const useStateKeyPrefix = "$s";
 function useState(...args) {
@@ -981,16 +1048,51 @@ const components_plugin_KR1HBZs4kY = /* @__PURE__ */ defineNuxtPlugin({
 const VueSmoothScroll_VbAQ3PEUo0 = /* @__PURE__ */ defineNuxtPlugin((nuxtApp) => {
   nuxtApp.vueApp.use(VueSmoothScroll);
 });
+let routes;
+const prerender_server_LXx1wM9sKF = /* @__PURE__ */ defineNuxtPlugin(async () => {
+  let __temp, __restore;
+  if (!import.meta.prerender || routerOptions.hashMode) {
+    return;
+  }
+  if (routes && !routes.length) {
+    return;
+  }
+  routes || (routes = Array.from(processRoutes(([__temp, __restore] = executeAsync(() => {
+    var _a;
+    return (_a = routerOptions.routes) == null ? void 0 : _a.call(routerOptions, _routes);
+  }), __temp = await __temp, __restore(), __temp) ?? _routes)));
+  const batch = routes.splice(0, 10);
+  prerenderRoutes(batch);
+});
+const OPTIONAL_PARAM_RE = /^\/?:.*(?:\?|\(\.\*\)\*)$/;
+function processRoutes(routes2, currentPath = "/", routesToPrerender = /* @__PURE__ */ new Set()) {
+  var _a;
+  for (const route of routes2) {
+    if (OPTIONAL_PARAM_RE.test(route.path) && !((_a = route.children) == null ? void 0 : _a.length)) {
+      routesToPrerender.add(currentPath);
+    }
+    if (route.path.includes(":")) {
+      continue;
+    }
+    const fullPath = joinURL(currentPath, route.path);
+    routesToPrerender.add(fullPath);
+    if (route.children) {
+      processRoutes(route.children, fullPath, routesToPrerender);
+    }
+  }
+  return routesToPrerender;
+}
 const plugins = [
   unhead_KgADcZ0jPj,
   plugin,
   _0_siteConfig_MwZUzHrRNP,
   revive_payload_server_eJ33V7gbc6,
   components_plugin_KR1HBZs4kY,
-  VueSmoothScroll_VbAQ3PEUo0
+  VueSmoothScroll_VbAQ3PEUo0,
+  prerender_server_LXx1wM9sKF
 ];
 const layouts = {
-  default: () => import("./_nuxt/default-B7HwlWaB.js").then((m) => m.default || m)
+  default: () => import("./_nuxt/default-Cv0JzWhR.js").then((m) => m.default || m)
 };
 const LayoutLoader = defineComponent({
   name: "LayoutLoader",
@@ -1218,7 +1320,7 @@ const __nuxt_component_1 = defineComponent({
 function _mergeTransitionProps(routeProps) {
   const _props = routeProps.map((prop) => ({
     ...prop,
-    onAfterLeave: prop.onAfterLeave ? toArray(prop.onAfterLeave) : void 0
+    onAfterLeave: prop.onAfterLeave ? toArray$1(prop.onAfterLeave) : void 0
   }));
   return defu(..._props);
 }
@@ -1240,7 +1342,7 @@ const _export_sfc = (sfc, props) => {
   return target;
 };
 const _sfc_main$2 = {};
-function _sfc_ssrRender$1(_ctx, _push, _parent, _attrs) {
+function _sfc_ssrRender(_ctx, _push, _parent, _attrs) {
   const _component_NuxtLayout = __nuxt_component_0;
   const _component_NuxtPage = __nuxt_component_1;
   _push(ssrRenderComponent(_component_NuxtLayout, _attrs, {
@@ -1262,49 +1364,54 @@ _sfc_main$2.setup = (props, ctx) => {
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("app.vue");
   return _sfc_setup$2 ? _sfc_setup$2(props, ctx) : void 0;
 };
-const AppComponent = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["ssrRender", _sfc_ssrRender$1]]);
-const _sfc_main$1 = {
+const AppComponent = /* @__PURE__ */ _export_sfc(_sfc_main$2, [["ssrRender", _sfc_ssrRender]]);
+const _imports_0 = "" + __buildAssetsURL("logot.HSDoYlGm.png");
+const _sfc_main$1 = /* @__PURE__ */ defineComponent({
+  __name: "error",
+  __ssrInlineRender: true,
   props: {
     error: {
       type: Object,
       default: () => ({ statusCode: 404 })
     }
-  }
-};
-function _sfc_ssrRender(_ctx, _push, _parent, _attrs, $props, $setup, $data, $options) {
-  const _component_router_link = resolveComponent("router-link");
-  _push(`<div${ssrRenderAttrs(mergeProps({ class: "error-page" }, _attrs))} data-v-1de0b1b2>`);
-  if ($props.error.statusCode === 404) {
-    _push(`<h1 data-v-1de0b1b2>404 - Страница не найдена</h1>`);
-  } else {
-    _push(`<h1 data-v-1de0b1b2>Ошибка: ${ssrInterpolate($props.error.statusCode)}</h1>`);
-  }
-  if ($props.error.statusCode === 404) {
-    _push(`<p data-v-1de0b1b2>Извините, но страница, которую вы ищете, не существует.</p>`);
-  } else {
-    _push(`<!---->`);
-  }
-  _push(ssrRenderComponent(_component_router_link, { to: "/" }, {
-    default: withCtx((_, _push2, _parent2, _scopeId) => {
-      if (_push2) {
-        _push2(`Вернуться на главную`);
+  },
+  setup(__props) {
+    const showMenu = ref(false);
+    useSeoMeta({
+      title: "Eori Аниме светильники 3D",
+      ogTitle: "Eori Аниме светильники 3D",
+      description: "Купите уникальные ночные светильники 3D и аниме, включая светильники в стиле Геншин, тян, тяночка, неко тян и GTA5.",
+      ogDescription: "Купите уникальные ночные светильники 3D и аниме, включая светильники в стиле Геншин, тян, тяночка, неко тян и GTA5."
+    });
+    return (_ctx, _push, _parent, _attrs) => {
+      _push(`<div${ssrRenderAttrs(_attrs)} data-v-8bb8a852><div class="banner-1" data-v-8bb8a852><nav class="container px-6 mx-auto md:flex md:justify-between md:items-center" data-v-8bb8a852><div class="flex items-center justify-between" data-v-8bb8a852><div class="relative w-16 h-16" data-v-8bb8a852><img class="rounded-full border border-gray-100 shadow-sm"${ssrRenderAttr("src", _imports_0)} alt="user image" data-v-8bb8a852></div><div class="flex md:hidden" data-v-8bb8a852><button type="button" class="text-gray-800 hover:text-gray-400 focus:outline-none focus:text-gray-400" data-v-8bb8a852><svg viewBox="0 0 24 24" class="w-6 h-6 fill-current" data-v-8bb8a852><path fill-rule="evenodd" d="M4 5h16a1 1 0 0 1 0 2H4a1 1 0 1 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2zm0 6h16a1 1 0 0 1 0 2H4a1 1 0 0 1 0-2z" data-v-8bb8a852></path></svg></button></div></div><ul class="${ssrRenderClass([unref(showMenu) ? "flex" : "hidden", "flex-col items-end mt-7 space-y-3 md:flex md:space-y-0 md:flex-row md:items-center md:space-x-9 md:mt-0"])}" data-v-8bb8a852><li class="menu-button" data-v-8bb8a852><a href="/" data-v-8bb8a852>Главная</a></li><li class="menu-button" data-v-8bb8a852><a href="/catalog" data-v-8bb8a852>Каталог</a></li><li class="menu-button" data-v-8bb8a852><a href="/about" data-v-8bb8a852>О нас</a></li></ul></nav></div>`);
+      if (__props.error) {
+        _push(`<div class="error-page banner-1" data-v-8bb8a852>`);
+        if (__props.error.statusCode === 404) {
+          _push(`<h1 data-v-8bb8a852>404 - Страница не найдена</h1>`);
+        } else {
+          _push(`<h1 data-v-8bb8a852>Ошибка: ${ssrInterpolate(__props.error.statusCode)}</h1>`);
+        }
+        if (__props.error.statusCode === 404) {
+          _push(`<p data-v-8bb8a852>Извините, но страница, которую вы ищете, не существует.</p>`);
+        } else {
+          _push(`<!---->`);
+        }
+        _push(`</div>`);
       } else {
-        return [
-          createTextVNode("Вернуться на главную")
-        ];
+        _push(`<!---->`);
       }
-    }),
-    _: 1
-  }, _parent));
-  _push(`</div>`);
-}
+      _push(`</div>`);
+    };
+  }
+});
 const _sfc_setup$1 = _sfc_main$1.setup;
 _sfc_main$1.setup = (props, ctx) => {
   const ssrContext = useSSRContext();
   (ssrContext.modules || (ssrContext.modules = /* @__PURE__ */ new Set())).add("error.vue");
   return _sfc_setup$1 ? _sfc_setup$1(props, ctx) : void 0;
 };
-const ErrorComponent = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["ssrRender", _sfc_ssrRender], ["__scopeId", "data-v-1de0b1b2"]]);
+const ErrorComponent = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["__scopeId", "data-v-8bb8a852"]]);
 const _sfc_main = {
   __name: "nuxt-root",
   __ssrInlineRender: true,
@@ -1373,9 +1480,9 @@ let entry;
 }
 const entry$1 = (ssrContext) => entry(ssrContext);
 export {
-  _export_sfc as _,
+  _imports_0 as _,
+  _export_sfc as a,
   entry$1 as default,
-  injectHead as i,
-  resolveUnrefHeadInput as r
+  useSeoMeta as u
 };
 //# sourceMappingURL=server.mjs.map

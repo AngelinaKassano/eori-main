@@ -46,6 +46,13 @@
   @apply md:w-1/2 md:rounded-r-2xl md:rounded-l-none rounded-b-2xl flex;
 }
 
+.sidebar {
+  width: 300px; /* Ширина боковой панели */
+  padding: 20px;
+  background-color: #f0f0f0;
+}
+
+
 @layer utilities {
   .h-850 {
     height: 900px;
